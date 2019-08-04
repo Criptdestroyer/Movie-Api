@@ -11,24 +11,22 @@ import com.criptdestroyer.moviecatalogueapi.model.TvShowItems;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MainViewModel extends ViewModel {
+
+public class DetailViewModel extends ViewModel {
     private static final String API_KEY = "4c6b99dfcd747c39e86b3552395539e2";
-    private MutableLiveData<ArrayList<MovieItems>> listDataMovie = new MutableLiveData<>();
-    private MutableLiveData<ArrayList<TvShowItems>> listDataTvShow = new MutableLiveData<>();
+    private MutableLiveData<MovieItems> listDataMovie = new MutableLiveData<>();
+    private MutableLiveData<TvShowItems> listDataTvShow = new MutableLiveData<>();
 
-    public void setMovie(String language) {
+    public void setMovie(int id, String language) {
         AsyncHttpClient client = new AsyncHttpClient();
-        final ArrayList<MovieItems> listItems = new ArrayList<>();
-        String url = "https://api.themoviedb.org/3/discover/movie?api_key=" + API_KEY + "&language="+language;
+        String url = "https://api.themoviedb.org/3/movie/"+id+"?api_key=" + API_KEY + "&language="+language;
 
         client.get(url, new AsyncHttpResponseHandler() {
             @Override
@@ -36,14 +34,8 @@ public class MainViewModel extends ViewModel {
                 try {
                     String result = new String(responseBody);
                     JSONObject responseObject = new JSONObject(result);
-                    JSONArray list = responseObject.getJSONArray("results");
-
-                    for (int i = 0; i < list.length(); i++) {
-                        JSONObject movie = list.getJSONObject(i);
-                        MovieItems dataItems = new MovieItems(movie);
-                        listItems.add(dataItems);
-                    }
-                    listDataMovie.postValue(listItems);
+                    MovieItems dataItems = new MovieItems(responseObject);
+                    listDataMovie.postValue(dataItems);
                 } catch (JSONException e) {
                     Log.d("Exception", Objects.requireNonNull(e.getMessage()));
                 }
@@ -56,10 +48,9 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-    public void setTvShow(String language) {
+    public void setTvShow(int id, String language) {
         AsyncHttpClient client = new AsyncHttpClient();
-        final ArrayList<TvShowItems> listItems = new ArrayList<>();
-        String url = "https://api.themoviedb.org/3/discover/tv?api_key=" + API_KEY + "&language="+language;
+        String url = "https://api.themoviedb.org/3/tv/"+id+"?api_key=" + API_KEY + "&language="+language;
 
         client.get(url, new AsyncHttpResponseHandler() {
             @Override
@@ -67,14 +58,8 @@ public class MainViewModel extends ViewModel {
                 try {
                     String result = new String(responseBody);
                     JSONObject responseObject = new JSONObject(result);
-                    JSONArray list = responseObject.getJSONArray("results");
-
-                    for (int i = 0; i < list.length(); i++) {
-                        JSONObject tvShow = list.getJSONObject(i);
-                        TvShowItems dataItems = new TvShowItems(tvShow);
-                        listItems.add(dataItems);
-                    }
-                    listDataTvShow.postValue(listItems);
+                    TvShowItems dataItems = new TvShowItems(responseObject);
+                    listDataTvShow.postValue(dataItems);
                 } catch (JSONException e) {
                     Log.d("Exception", Objects.requireNonNull(e.getMessage()));
                 }
@@ -87,12 +72,11 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-    public LiveData<ArrayList<MovieItems>> getDataMovie() {
+    public LiveData<MovieItems> getDataMovie() {
         return listDataMovie;
     }
 
-    public LiveData<ArrayList<TvShowItems>> getDataTvShow() {
+    public LiveData<TvShowItems> getDataTvShow() {
         return listDataTvShow;
     }
-
 }

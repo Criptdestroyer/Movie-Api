@@ -16,9 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.criptdestroyer.moviecatalogueapi.R;
-import com.criptdestroyer.moviecatalogueapi.model.MovieItems;
 import com.criptdestroyer.moviecatalogueapi.model.TvShowItems;
-import com.criptdestroyer.moviecatalogueapi.view.adapter.MovieAdapter;
+import com.criptdestroyer.moviecatalogueapi.view.activity.MainActivity;
 import com.criptdestroyer.moviecatalogueapi.view.adapter.TvShowAdapter;
 import com.criptdestroyer.moviecatalogueapi.viewmodel.MainViewModel;
 
@@ -32,7 +31,7 @@ public class TvShowFragment extends Fragment {
     private ProgressBar progressBar;
 
     public TvShowFragment() {
-        // Required empty public constructor
+
     }
 
 
@@ -43,7 +42,7 @@ public class TvShowFragment extends Fragment {
 
         MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mainViewModel.getDataTvShow().observe(this, getTvShow);
-        mainViewModel.setTvShow();
+        mainViewModel.setTvShow(MainActivity.locale_language);
 
         adapter = new TvShowAdapter();
         adapter.notifyDataSetChanged();
@@ -54,7 +53,6 @@ public class TvShowFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-
         showLoading(true);
         return rootView;
     }

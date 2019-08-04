@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.criptdestroyer.moviecatalogueapi.R;
 import com.criptdestroyer.moviecatalogueapi.model.MovieItems;
+import com.criptdestroyer.moviecatalogueapi.view.activity.MainActivity;
 import com.criptdestroyer.moviecatalogueapi.view.adapter.MovieAdapter;
 import com.criptdestroyer.moviecatalogueapi.viewmodel.MainViewModel;
 
@@ -30,9 +31,8 @@ public class MovieFragment extends Fragment {
     private ProgressBar progressBar;
 
     public MovieFragment() {
-        // Required empty public constructor
-    }
 
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -42,7 +42,7 @@ public class MovieFragment extends Fragment {
 
         MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mainViewModel.getDataMovie().observe(this, getMovie);
-        mainViewModel.setMovie();
+        mainViewModel.setMovie(MainActivity.locale_language);
 
         adapter = new MovieAdapter();
         adapter.notifyDataSetChanged();
@@ -53,7 +53,6 @@ public class MovieFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-
         showLoading(true);
         return rootView;
     }

@@ -1,5 +1,6 @@
 package com.criptdestroyer.moviecatalogueapi.view.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.criptdestroyer.moviecatalogueapi.R;
 import com.criptdestroyer.moviecatalogueapi.model.MovieItems;
+import com.criptdestroyer.moviecatalogueapi.view.activity.DetailMovieActivity;
 
 import java.util.ArrayList;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.DataViewHolder> {
     private ArrayList<MovieItems> mData = new ArrayList<>();
-
 
     public void setData(ArrayList<MovieItems> items){
         mData.clear();
@@ -35,6 +36,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.DataViewHold
     @Override
     public void onBindViewHolder(@NonNull DataViewHolder holder, int position) {
         holder.bind(mData.get(position));
+
+        final int i = position;
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), DetailMovieActivity.class);
+                intent.putExtra(DetailMovieActivity.EXTRA_FILM, mData.get(i));
+                view.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -42,14 +53,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.DataViewHold
         return mData.size();
     }
 
-    public class DataViewHolder extends RecyclerView.ViewHolder{
+    class DataViewHolder extends RecyclerView.ViewHolder{
         private TextView txtTitle;
         private TextView txtDate;
         private TextView txtDescription;
         private ImageView imgPhoto;
         private View view;
 
-        public DataViewHolder(@NonNull View itemView) {
+        DataViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
             txtTitle = itemView.findViewById(R.id.tv_item_title);
@@ -62,8 +73,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.DataViewHold
             txtTitle.setText(dataItems.getTitle());
             txtDate.setText(dataItems.getDate());
             txtDescription.setText(dataItems.getDescription());
-            Glide.with(view).load("https://image.tmdb.org/t/p/w500"+dataItems.getPhoto()).placeholder(R.drawable.notfound).into(imgPhoto);
-
+            Glide.with(view).load("https://image.tmdb.org/t/p/w500"+dataItems.getPhoto()).placeholder(R.drawable.notfound).error(R.drawable.notfound).into(imgPhoto);
         }
     }
 }
